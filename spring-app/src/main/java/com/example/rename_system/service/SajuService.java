@@ -1,19 +1,24 @@
 package com.example.rename_system.service;
 
 import com.example.rename_system.dto.WuxingResult;
+import com.example.rename_system.entity.NameEntity;
+import com.example.rename_system.repository.NameRepository;
 import com.nlf.calendar.EightChar;
 import com.nlf.calendar.Lunar;
 import com.nlf.calendar.Solar;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class SajuService {
-    public WuxingResult anylyze(String birthDateTime) {
+    private final NameRepository nameRepository;
+
+    public SajuService(NameRepository nameRepository) {
+        this.nameRepository = nameRepository;
+    }
+
+    public WuxingResult analyze(String birthDateTime) {
         // 날짜 파싱
         String[] parts = birthDateTime.split(" ");
         String[] ymd = parts[0].split("-");
@@ -77,4 +82,22 @@ public class SajuService {
         return new WuxingResult(eightChar, count, strength, weakness);
     }
 
+    public String calculateGeneration(int year) {
+        if (year < 1960) return "Baby Boomers";         // (1945)-1959
+        else if (year < 1980) return "Gen-X";           // 1960-1980
+        else if (year < 2000) return "Millennials";     // 1980-1999
+        else if (year < 2010) return "Gen-Z";           // 2000-2009
+        else return "Gen-Alpha";                        // 2010-now
+    }
+
+
+    // 1단계 필터: 성별+세대
+    public List<NameEntity> filterByGenderAndGeneration(String gender, int birthYear) {
+        String generation = calculateGeneration(birthYear);
+        return nameRepository.findByGenderAndGeneration(gender, generation);
+    }
+
+    // 2단계 필터: 오행
+
+    // 3단계 필터: 키워드
 }
