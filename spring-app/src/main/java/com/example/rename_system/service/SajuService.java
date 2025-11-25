@@ -62,16 +62,17 @@ public class SajuService {
         );
 
         for (String g : gans) {
-            count.computeIfPresent(ganToWuxing.get(g), (k, v) -> v + 1);
+            String key = ganToWuxing.get(g);
+            if (key != null) count.put(key, count.get(key) + 1);
         }
-
         for (String z : zhis) {
-            count.computeIfPresent(zhiToWuxing.get(z), (k, v) -> v + 1);
+            String key = zhiToWuxing.get(z);
+            if (key != null) count.put(key, count.get(key) + 1);
         }
 
         // 강/약 오행
         String strength = Collections.max(count.entrySet(), Map.Entry.comparingByValue()).getKey();
-        String weakness = Collections.max(count.entrySet(), Map.Entry.comparingByValue()).getKey();
+        String weakness = Collections.min(count.entrySet(), Map.Entry.comparingByValue()).getKey();
 
         return new WuxingResult(eightChar, count, strength, weakness);
     }
