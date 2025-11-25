@@ -19,6 +19,6 @@ public class SajuController {
 
     @PostMapping("/analyze")
     public WuxingResult analyze(@RequestBody NameRequest nameRequest){
-        return sajuService.anylyze(nameRequest.getBirthDateTime());
+        return sajuService.analyze(nameRequest.getBirthDateTime());
     }
 }
