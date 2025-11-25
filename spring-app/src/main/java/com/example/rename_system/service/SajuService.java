@@ -13,7 +13,7 @@ import java.util.Map;
 
 @Service
 public class SajuService {
-    public WuxingResult anylyze(String birthDateTime) {
+    public WuxingResult analyze(String birthDateTime) {
         // 날짜 파싱
         String[] parts = birthDateTime.split(" ");
         String[] ymd = parts[0].split("-");
