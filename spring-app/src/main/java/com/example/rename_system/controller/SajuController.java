@@ -17,11 +17,11 @@ public class SajuController {
         this.sajuService = sajuService;
     }
 
-    @GetMapping
-    public List<NameEntity> testFilter(@RequestParam String gender,  @RequestParam String birthDateTime) {
-        WuxingResult analyzed = sajuService.analyze(birthDateTime);
+    @PostMapping("/filter")
+    public List<NameEntity> testFilter(@RequestBody NameRequest nameRequest) {
+        WuxingResult analyzed = sajuService.analyze(nameRequest.getBirthDateTime());
 
-        List<NameEntity> filteredByGenderAndGeneration = sajuService.filterByGenderAndGeneration(gender, analyzed.getYear());
+        List<NameEntity> filteredByGenderAndGeneration = sajuService.filterByGenderAndGeneration(nameRequest.getGender(), analyzed.getYear());
         List<NameEntity> filteredByWuxing = sajuService.filterByWuxing(filteredByGenderAndGeneration, analyzed.getWeakness());
 
         return filteredByWuxing;
