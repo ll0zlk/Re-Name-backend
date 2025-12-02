@@ -1,8 +1,10 @@
 package com.example.rename_system.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
 @Entity
+@Getter
 @Table(name = "baby_names")
 public class NameEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
