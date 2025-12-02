@@ -7,6 +7,7 @@ import com.example.rename_system.service.SajuService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Random;
 
 @RestController
 @RequestMapping("api/saju")
@@ -18,12 +19,14 @@ public class SajuController {
     }
 
     @PostMapping("/filter")
-    public List<NameEntity> testFilter(@RequestBody NameRequest nameRequest) {
+    public NameEntity testFilter(@RequestBody NameRequest nameRequest) {
         WuxingResult analyzed = sajuService.analyze(nameRequest.getBirthDateTime());
 
         List<NameEntity> filteredByGenderAndGeneration = sajuService.filterByGenderAndGeneration(nameRequest.getGender(), analyzed.getYear());
         List<NameEntity> filteredByWuxing = sajuService.filterByWuxing(filteredByGenderAndGeneration, analyzed.getWeakness());
+        Random random = new Random();
+        NameEntity randomName = filteredByWuxing.get(random.nextInt(filteredByWuxing.size()));
 
-        return filteredByWuxing;
+        return randomName;
     }
 }
