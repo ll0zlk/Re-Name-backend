@@ -9,6 +9,9 @@ public interface NameRepository extends JpaRepository<NameEntity, Long> {
     // 성별+세대로 찾기
     List<NameEntity> findByGenderAndGeneration(String gender, String generation);
 
+    // 오행으로 찾기
+    List<NameEntity> findByElement(String element);
+
     // 키워드로 찾기
     List<NameEntity> findBySymbolContaining(String keyword);
 }

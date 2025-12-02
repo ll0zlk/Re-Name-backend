@@ -79,7 +79,7 @@ public class SajuService {
         String strength = Collections.max(count.entrySet(), Map.Entry.comparingByValue()).getKey();
         String weakness = Collections.min(count.entrySet(), Map.Entry.comparingByValue()).getKey();
 
-        return new WuxingResult(eightChar, count, strength, weakness);
+        return new WuxingResult(eightChar, count, strength, weakness, year);
     }
 
     public String calculateGeneration(int year) {
@@ -90,6 +90,13 @@ public class SajuService {
         else return "Gen-Alpha";                        // 2010-now
     }
 
+    Map<String, String> engToKor = Map.of(
+            "wood", "목",
+            "fire", "화",
+            "earth", "토",
+            "metal", "금",
+            "water", "수"
+    );
 
     // 1단계 필터: 성별+세대
     public List<NameEntity> filterByGenderAndGeneration(String gender, int birthYear) {
@@ -98,6 +105,17 @@ public class SajuService {
     }
 
     // 2단계 필터: 오행
+    public List<NameEntity> filterByWuxing(List<NameEntity> candidates, String weakness) {
+        List<NameEntity> filtered = new ArrayList<>();
+        String korWeakness = engToKor.get(weakness);
+        for (NameEntity candidate : candidates) {
+            String elementStr = candidate.getElement();
+            if (elementStr != null && elementStr.contains(korWeakness)) {
+                filtered.add(candidate);
+            }
+        }
+        return filtered;
+    }
 
     // 3단계 필터: 키워드
 }
