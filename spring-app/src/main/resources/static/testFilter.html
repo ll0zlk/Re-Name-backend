@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>RENAMING</title>
+</head>
+<body>
+<h1>RENAMING</h1>
+
+<label for="gender">성별:</label>
+<select id="gender">
+    <option value="여성">여성</option>
+    <option value="남성">남성</option>
+</select>
+<br><br>
+
+<label for="birthDateTime">생년월일 시간 (YYYY-MM-DD HH:MM):</label>
+<input type="text" id="birthDateTime" placeholder="2000-01-01 00:00">
+<br><br>
+
+<button id="submitBtn">분석 및 필터</button>
+<button id="resetButton">다시 받기</button>
+
+<h2>결과:</h2>
+<pre id="result"></pre>
+
+<script>
+    const submitBtn = document.getElementById('submitBtn');
+    const resetBtn = document.getElementById('resetButton');
+    const resultEl = document.getElementById('result');
+
+    // 공통 요청 함수
+    function sendRequest() {
+        const gender = document.getElementById('gender').value;
+        const birthDateTime = document.getElementById('birthDateTime').value;
+
+        const data = {
+            gender: gender,
+            birthDateTime: birthDateTime
+        };
+
+        fetch('/api/saju/filter', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('HTTP error ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                resultEl.textContent = JSON.stringify(data, null, 2);
+            })
+            .catch(err => {
+                resultEl.textContent = '오류 발생: ' + err;
+            });
+    }
+
+    submitBtn.addEventListener('click', sendRequest);
+
+    resetBtn.addEventListener('click', sendRequest);
+</script>
+</body>
+</html>
