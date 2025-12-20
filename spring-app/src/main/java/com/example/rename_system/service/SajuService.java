@@ -8,6 +8,7 @@ import com.nlf.calendar.Lunar;
 import com.nlf.calendar.Solar;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -20,15 +21,13 @@ public class SajuService {
 
     public WuxingResult analyze(String birthDateTime) {
         // 날짜 파싱
-        String[] parts = birthDateTime.split(" ");
-        String[] ymd = parts[0].split("-");
-        String[] hm = parts[1].split(":");
+        LocalDateTime dt = LocalDateTime.parse(birthDateTime);
 
-        int year = Integer.parseInt(ymd[0]);
-        int month = Integer.parseInt(ymd[1]);
-        int day = Integer.parseInt(ymd[2]);
-        int hour = Integer.parseInt(hm[0]);
-        int minute = Integer.parseInt(hm[1]);
+        int year = dt.getYear();
+        int month = dt.getMonthValue();
+        int day = dt.getDayOfMonth();
+        int hour = dt.getHour();
+        int minute = dt.getMinute();
 
         // 양력 -> 음력
         Solar solar = new Solar(year, month, day, hour, minute, 0);
@@ -105,17 +104,16 @@ public class SajuService {
     }
 
     // 2단계 필터: 오행
-    public List<NameEntity> filterByWuxing(List<NameEntity> candidates, String weakness) {
+    public List<NameEntity> filterByWuxing(List<NameEntity> candidates, String weakness, String strength) {
         List<NameEntity> filtered = new ArrayList<>();
         String korWeakness = engToKor.get(weakness);
+        String korStrength = engToKor.get(strength);
         for (NameEntity candidate : candidates) {
             String elementStr = candidate.getElement();
-            if (elementStr != null && elementStr.contains(korWeakness)) {
+            if (elementStr != null && elementStr.contains(korWeakness) && !elementStr.contains(korStrength)) {
                 filtered.add(candidate);
             }
         }
         return filtered;
     }
-
-    // 3단계 필터: 키워드
 }

@@ -10,7 +10,8 @@ import java.util.List;
 import java.util.Random;
 
 @RestController
-@RequestMapping("api/saju")
+@RequestMapping("/api/saju")
+@CrossOrigin(origins = "*")
 public class SajuController {
     private final SajuService sajuService;
 
@@ -20,13 +21,15 @@ public class SajuController {
 
     @PostMapping("/filter")
     public NameEntity testFilter(@RequestBody NameRequest nameRequest) {
+        System.out.println(nameRequest.getBirthDateTime());
+        System.out.println(nameRequest.getGender());
         WuxingResult analyzed = sajuService.analyze(nameRequest.getBirthDateTime());
 
         List<NameEntity> filteredByGenderAndGeneration = sajuService.filterByGenderAndGeneration(nameRequest.getGender(), analyzed.getYear());
-        List<NameEntity> filteredByWuxing = sajuService.filterByWuxing(filteredByGenderAndGeneration, analyzed.getWeakness());
+        List<NameEntity> filteredByWuxing = sajuService.filterByWuxing(filteredByGenderAndGeneration, analyzed.getWeakness(), analyzed.getStrength());
+        System.out.println(filteredByGenderAndGeneration);
+        System.out.println(filteredByWuxing);
         Random random = new Random();
-        NameEntity randomName = filteredByWuxing.get(random.nextInt(filteredByWuxing.size()));
-
-        return randomName;
+        return filteredByWuxing.get(random.nextInt(filteredByWuxing.size()));
     }
 }
