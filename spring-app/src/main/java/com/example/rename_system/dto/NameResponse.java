@@ -5,5 +5,6 @@ public class NameResponse {
     private String hanja;
     private String pronunciation;
     private String meaning;
+    private String meaning_en;
     private String extra;
 }

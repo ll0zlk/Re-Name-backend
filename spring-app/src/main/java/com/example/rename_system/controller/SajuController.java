@@ -1,6 +1,7 @@
 package com.example.rename_system.controller;
 
 import com.example.rename_system.dto.NameRequest;
+import com.example.rename_system.dto.SajuResponse;
 import com.example.rename_system.dto.WuxingResult;
 import com.example.rename_system.entity.NameEntity;
 import com.example.rename_system.service.SajuService;
@@ -20,16 +21,18 @@ public class SajuController {
     }
 
     @PostMapping("/filter")
-    public NameEntity testFilter(@RequestBody NameRequest nameRequest) {
-        System.out.println(nameRequest.getBirthDateTime());
-        System.out.println(nameRequest.getGender());
+    public SajuResponse testFilter(@RequestBody NameRequest nameRequest) {
+        //System.out.println(nameRequest.getBirthDateTime());
+        //System.out.println(nameRequest.getGender());
         WuxingResult analyzed = sajuService.analyze(nameRequest.getBirthDateTime());
 
         List<NameEntity> filteredByGenderAndGeneration = sajuService.filterByGenderAndGeneration(nameRequest.getGender(), analyzed.getYear());
         List<NameEntity> filteredByWuxing = sajuService.filterByWuxing(filteredByGenderAndGeneration, analyzed.getWeakness(), analyzed.getStrength());
-        System.out.println(filteredByGenderAndGeneration);
-        System.out.println(filteredByWuxing);
+        //System.out.println(filteredByGenderAndGeneration);
+        //System.out.println(filteredByWuxing);
         Random random = new Random();
-        return filteredByWuxing.get(random.nextInt(filteredByWuxing.size()));
+        NameEntity selectedName = filteredByWuxing.get(random.nextInt(filteredByWuxing.size()));
+        System.out.println("English Meaning Check: " + selectedName.getMeaning_en());
+        return new SajuResponse(selectedName, analyzed.getFiveElements());
     }
 }

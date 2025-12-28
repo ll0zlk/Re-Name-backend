@@ -20,17 +20,19 @@ public class SajuService {
     }
 
     public WuxingResult analyze(String birthDateTime) {
-        // 날짜 파싱
-        LocalDateTime dt = LocalDateTime.parse(birthDateTime);
+        boolean hasTime = birthDateTime.contains("T") || birthDateTime.length() > 10;
 
-        int year = dt.getYear();
-        int month = dt.getMonthValue();
-        int day = dt.getDayOfMonth();
-        int hour = dt.getHour();
-        int minute = dt.getMinute();
+        // 날짜 파싱
+        LocalDateTime dt;
+        if (hasTime) {
+            dt = LocalDateTime.parse(birthDateTime);
+        } else {
+            dt = java.time.LocalDate.parse(birthDateTime).atStartOfDay();
+        }
 
         // 양력 -> 음력
-        Solar solar = new Solar(year, month, day, hour, minute, 0);
+        Solar solar = new Solar(dt.getYear(), dt.getMonthValue(), dt.getDayOfMonth(),
+                dt.getHour(), dt.getMinute(), 0);
         Lunar lunar = solar.getLunar();
         EightChar eightChar = lunar.getEightChar();
 
@@ -57,13 +59,13 @@ public class SajuService {
         count.put("metal", 0);
         count.put("water", 0);
 
-        List<String> gans = List.of(
-                eightChar.getYearGan(), eightChar.getMonthGan(), eightChar.getDayGan(), eightChar.getTimeGan()
-        );
+        List<String> gans = new ArrayList<>(List.of(eightChar.getYearGan(), eightChar.getMonthGan(), eightChar.getDayGan()));
+        List<String> zhis = new ArrayList<>(List.of(eightChar.getYearZhi(), eightChar.getMonthZhi(), eightChar.getDayZhi()));
 
-        List<String> zhis = List.of(
-                eightChar.getYearZhi(), eightChar.getMonthZhi(), eightChar.getDayZhi(), eightChar.getTimeZhi()
-        );
+        if (hasTime) {
+            gans.add(eightChar.getTimeGan());
+            zhis.add(eightChar.getTimeZhi());
+        }
 
         for (String g : gans) {
             String key = ganToWuxing.get(g);
@@ -78,7 +80,7 @@ public class SajuService {
         String strength = Collections.max(count.entrySet(), Map.Entry.comparingByValue()).getKey();
         String weakness = Collections.min(count.entrySet(), Map.Entry.comparingByValue()).getKey();
 
-        return new WuxingResult(eightChar, count, strength, weakness, year);
+        return new WuxingResult(eightChar, count, strength, weakness, dt.getYear());
     }
 
     public String calculateGeneration(int year) {
