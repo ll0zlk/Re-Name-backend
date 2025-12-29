@@ -30,6 +30,15 @@ public class SajuController {
         List<NameEntity> filteredByWuxing = sajuService.filterByWuxing(filteredByGenderAndGeneration, analyzed.getWeakness(), analyzed.getStrength());
         //System.out.println(filteredByGenderAndGeneration);
         //System.out.println(filteredByWuxing);
+
+        if (filteredByWuxing == null || filteredByWuxing.isEmpty()) {
+            if (!filteredByGenderAndGeneration.isEmpty()) {
+                NameEntity fallbackName = filteredByGenderAndGeneration.get(new Random().nextInt(filteredByGenderAndGeneration.size()));
+                return new SajuResponse(fallbackName, analyzed.getFiveElements());
+            }
+            return null;
+        }
+
         Random random = new Random();
         NameEntity selectedName = filteredByWuxing.get(random.nextInt(filteredByWuxing.size()));
         System.out.println("English Meaning Check: " + selectedName.getMeaning_en());
