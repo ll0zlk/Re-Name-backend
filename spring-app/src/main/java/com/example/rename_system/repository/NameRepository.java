@@ -8,7 +8,4 @@ import java.util.List;
 public interface NameRepository extends JpaRepository<NameEntity, Long> {
     // 성별+세대로 찾기
     List<NameEntity> findByGenderAndGeneration(String gender, String generation);
-
-    // 키워드로 찾기
-    List<NameEntity> findBySymbolContaining(String keyword);
 }

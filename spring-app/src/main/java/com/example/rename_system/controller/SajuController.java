@@ -41,7 +41,6 @@ public class SajuController {
 
         Random random = new Random();
         NameEntity selectedName = filteredByWuxing.get(random.nextInt(filteredByWuxing.size()));
-        System.out.println("English Meaning Check: " + selectedName.getMeaning_en());
         return new SajuResponse(selectedName, analyzed.getFiveElements());
     }
 }
