@@ -15,7 +15,6 @@ public class NameEntity {
     private String pronunciation;   // 로마자 표기법
     private String generation;  // 세대
     private String gender;
-    private String symbol;  // 키워드
     private String meaning; // 의미
     @Column(name = "meaning_en")
     private String meaning_en;
