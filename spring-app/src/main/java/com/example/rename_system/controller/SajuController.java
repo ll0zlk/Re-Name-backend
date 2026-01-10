@@ -5,6 +5,7 @@ import com.example.rename_system.dto.SajuResponse;
 import com.example.rename_system.dto.WuxingResult;
 import com.example.rename_system.entity.NameEntity;
 import com.example.rename_system.service.SajuService;
+import lombok.Getter;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,5 +43,10 @@ public class SajuController {
         Random random = new Random();
         NameEntity selectedName = filteredByWuxing.get(random.nextInt(filteredByWuxing.size()));
         return new SajuResponse(selectedName, analyzed.getFiveElements());
+    }
+
+    @GetMapping("/health")
+    public String healthCheck() {
+        return "OK";
     }
 }
